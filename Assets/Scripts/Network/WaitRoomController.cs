@@ -8,9 +8,16 @@ using UnityEngine.SceneManagement;
 
 public class WaitRoomController : MonoBehaviourPunCallbacks {
 
-    public int playersInRoom;
-    public TextMeshProUGUI text;
-    public string gameSceneName;
+    [SerializeField] private int playersInRoom;
+    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private string gameSceneName;
+    [SerializeField] private TextMeshProUGUI playerNumber, roomName;
+
+    private void Start() {
+        playerNumber.text = "Max Players : " + PhotonNetwork.CurrentRoom.MaxPlayers;
+        roomName.text = "Room Name : " + PhotonNetwork.CurrentRoom.Name;
+
+    }
 
     private void Update() {
         playersInRoom = PhotonNetwork.PlayerList.Length;

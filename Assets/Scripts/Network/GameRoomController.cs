@@ -63,22 +63,21 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     }
 
     private void Start() {
-        SetGameState(GameState.WAITING);
-        myPlayer = PhotonNetwork.LocalPlayer;
-
         if (PhotonNetwork.IsMasterClient) {
-            playerSpawn = playerSpawns[0];
+            SetGameState(GameState.WAITING);
         }
-        else {
-            playerSpawn = playerSpawns[1];
-        }
+
+        myPlayer = PhotonNetwork.LocalPlayer;
+        Debug.Log(myPlayer.ActorNumber);
+        playerSpawn = playerSpawns[myPlayer.ActorNumber-1];
+
         GameObject player = PhotonNetwork.Instantiate("PhotonPlayer", playerSpawn.position, playerSpawn.rotation);
 
         AddPlayer();
     }
 
     private void Update() {
-        if (playerCount == PhotonNetwork.CurrentRoom.MaxPlayers && gameState == GameState.WAITING) {
+        if (playerCount == PhotonNetwork.CurrentRoom.MaxPlayers && gameState == GameState.WAITING && PhotonNetwork.IsMasterClient) {
             SetGameState(GameState.STARTED);
         }
         if (playerCount == 1 && gameState == GameState.STARTED) {
