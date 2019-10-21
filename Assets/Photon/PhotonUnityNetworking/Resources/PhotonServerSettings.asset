@@ -66,5 +66,6 @@ MonoBehaviour:
   - SetGameStateRPC
   - RemoveOwnership
   - AddDeathMessageRPC
+  - CountRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
