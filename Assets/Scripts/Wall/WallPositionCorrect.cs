@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class WallPositionCorrect : MonoBehaviour
+public class WallPositionCorrect : MonoBehaviourPunCallbacks
 {
     public void SetWallPosition(Vector3 pos1, Vector3 pos2, WallCreator.MoveDirection direction) {
         float scale = (Vector3.Distance(pos1, pos2));
@@ -21,4 +22,6 @@ public class WallPositionCorrect : MonoBehaviour
     Vector3 middlePoint(Vector3 pos1, Vector3 pos2) {
         return pos2 + (pos1 - pos2) / 2;
     }
+
+
 }

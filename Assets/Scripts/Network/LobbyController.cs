@@ -14,8 +14,7 @@ public class LobbyController : MonoBehaviourPunCallbacks {
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject joinRoomPanel;
     [SerializeField] private GameObject createRoomPanel;
-
-
+    [SerializeField] private TMP_InputField nickName;
 
     bool isOnline;
 
@@ -55,6 +54,10 @@ public class LobbyController : MonoBehaviourPunCallbacks {
 
         string roomOptionName = roomName.text;
         PhotonNetwork.JoinOrCreateRoom(roomOptionName, roomOptions, TypedLobby.Default);
+    }
+
+    public void SetNickName() {
+        PhotonNetwork.NickName = nickName.text;
     }
 
     //MENU CHOICES

@@ -85,7 +85,13 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         }
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer) {
+        RemovePlayer();
+    }
+
+
     public void SetEndGameText() {
+        TextEvent.instance.AddDeathMessage(PhotonNetwork.NickName + " Died");
         endGameText.text = "You Lose";
         endGamePanel.SetActive(true);
     }

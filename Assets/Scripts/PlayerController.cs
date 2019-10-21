@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 
 public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiateMagicCallback {
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     [SerializeField] private float timing;
     [SerializeField] private Transform sectionSpawnPoint;
     [SerializeField] private float trailUpdateTime;
+    [SerializeField] private TextMeshProUGUI playerName;
     public float lag;
     public MeshCreator lightTrail;
 
@@ -97,6 +99,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     void SetPlayerName() {
         gameObject.name = "myPlayer";
         Camera.main.GetComponent<NetworkCamera>().AssignPlayer(this.gameObject.transform);
+        playerName.text = PhotonNetwork.NickName;
     }
 
     private void Update() {
