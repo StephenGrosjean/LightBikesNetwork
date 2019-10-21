@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 public class GameRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private Material masterMaterial, clientMaterial;
@@ -88,5 +88,10 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     public void SetEndGameText() {
         endGameText.text = "You Lose";
         endGamePanel.SetActive(true);
+    }
+
+    public void Disconnect() {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("LobbyRoom");
     }
 }

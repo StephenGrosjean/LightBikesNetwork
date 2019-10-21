@@ -26,6 +26,12 @@ public class LobbyController : MonoBehaviourPunCallbacks {
 
     public override void OnConnectedToMaster() {
         Debug.Log("Connected To Master");
+        PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby() {
+        Debug.Log("Lobby Joined");
+        mainPanel.SetActive(true);
         isOnline = true;
     }
 
@@ -56,6 +62,12 @@ public class LobbyController : MonoBehaviourPunCallbacks {
     public void Menu_RandomJoin() {
         if (isOnline) {
             PhotonNetwork.JoinRandomRoom();
+        }
+    }
+
+    public void Menu_JoinRoom(string name) {
+        if (isOnline) {
+            PhotonNetwork.JoinRoom(name);
         }
     }
 
