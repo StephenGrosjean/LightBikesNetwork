@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerDeath : MonoBehaviour
+public class PlayerDeath : MonoBehaviourPunCallbacks
 {
     private PhotonView view;
     private WallCreator wallCreator;
@@ -17,17 +17,20 @@ public class PlayerDeath : MonoBehaviour
     private void OnCollisionEnter(Collision collision) {
         if (view.IsMine) {
             if (collision.collider.tag == "Wall" && collision.gameObject != wallCreator.GetCurrentWall()) {
-                //view.RPC("Death", RpcTarget.All);
+                Death();
             }
         }
     }
 
-    [PunRPC]
     public void Death() {
         if (!dead) {
-            dead = true;
-            GetComponent<PlayerController>().canControl = false;
-            PhotonNetwork.Instantiate("DeathObj", transform.position, transform.rotation);
+            if (photonView.IsMine) {
+                dead = true;
+                GetComponent<PlayerController>().canControl = false;
+                PhotonNetwork.Instantiate("DeathObj", transform.position, transform.rotation);
+                GameRoomController.instance.RemovePlayer();
+                GameRoomController.instance.SetEndGameText();
+            }
         }
     }
 }
