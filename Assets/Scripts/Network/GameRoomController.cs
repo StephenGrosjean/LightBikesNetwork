@@ -81,9 +81,9 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         if (playerCount == PhotonNetwork.CurrentRoom.MaxPlayers && gameState == GameState.WAITING && PhotonNetwork.IsMasterClient && gameState != GameState.FINISHED) {
             SetGameState(GameState.STARTED);
         }
-        if (playerCount == 1 && gameState == GameState.STARTED) {
+        /*if (playerCount == 1 && gameState == GameState.STARTED) {
             SetGameState(GameState.FINISHED);
-        }
+        }*/
 
         if (gameState == GameState.FINISHED) {
             endGamePanel.SetActive(true);

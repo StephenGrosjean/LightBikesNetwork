@@ -29,4 +29,8 @@ public class NetworkCamera : MonoBehaviour {
         }
     }
 
+    public Transform GetTarget() {
+        return target;
+    }
+
 }
