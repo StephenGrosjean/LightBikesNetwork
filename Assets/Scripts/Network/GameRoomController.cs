@@ -55,6 +55,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     }
 
     public void SetGameState(GameState state) {
+        if(PhotonNetwork.IsMasterClient)
         photonView.RPC("SetGameStateRPC", RpcTarget.All, state);
     }
     [PunRPC]
@@ -82,12 +83,9 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
             SetGameState(GameState.STARTED);
         }
         /*if (playerCount == 1 && gameState == GameState.STARTED) {
+            endGamePanel.SetActive(true);
             SetGameState(GameState.FINISHED);
         }*/
-
-        if (gameState == GameState.FINISHED) {
-            endGamePanel.SetActive(true);
-        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {

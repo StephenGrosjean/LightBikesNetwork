@@ -38,7 +38,8 @@ public class RoomList : MonoBehaviourPunCallbacks
                 color = "<color=#30ff44>";
 
             }
-            room.GetComponentInChildren<TextMeshProUGUI>().text = r.Name + " " + color + r.PlayerCount + "/" + r.MaxPlayers + "</color>";
+            room.GetComponent<RoomObject>().SetRoomName(r.Name);
+            room.GetComponent<RoomObject>().SetRoomCapacity(color + r.PlayerCount + "/" + r.MaxPlayers + "</color>");
             room.GetComponent<RoomObject>().roomName = r.Name;
             roomsObjects.Add(room);
         }

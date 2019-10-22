@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     [SerializeField] private Transform sectionSpawnPoint;
     [SerializeField] private float trailUpdateTime;
     [SerializeField] private TextMeshProUGUI playerName;
+
+    [Header("Materials")]
+    [SerializeField] private MeshRenderer bikeRenderer;
+
+
     public float lag;
     public MeshCreator lightTrail;
 
@@ -98,7 +103,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
 
     [PunRPC]
     public void SetPlayerColor() {
-        GetComponentInChildren<MeshRenderer>().material.color = GlobalPlayerColors.instance.GetPlayerColor(playerID);
+        bikeRenderer.material.SetColor("_EmissionColor", GlobalPlayerColors.instance.GetPlayerColor(playerID));
     }
 
     void SetPlayerName() {

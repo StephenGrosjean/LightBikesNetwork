@@ -12,7 +12,7 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private string gameSceneName;
     [SerializeField] private TextMeshProUGUI playerList;
-    [SerializeField] private TextMeshProUGUI playerNumber, roomName;
+    [SerializeField] private TextMeshProUGUI roomName;
     [SerializeField] private TextMeshProUGUI countdownText;
     public List<string> names = new List<string>();
 
@@ -20,14 +20,13 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     private bool counting;
 
     private void Start() {
-        playerNumber.text = "Max Players : " + PhotonNetwork.CurrentRoom.MaxPlayers;
         roomName.text = "Room Name : " + PhotonNetwork.CurrentRoom.Name;
         UpdatePlayerList();
     }
 
     private void Update() {
         playersInRoom = PhotonNetwork.PlayerList.Length;
-        text.text = "Players : " + playersInRoom.ToString();
+        text.text = "Players : " + playersInRoom.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers;
 
         if(playersInRoom == PhotonNetwork.CurrentRoom.MaxPlayers) {
             if (!counting && PhotonNetwork.IsMasterClient) {
@@ -61,10 +60,10 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
         Player[] players = PhotonNetwork.PlayerList;
         
         foreach(Player p in players) {
-            playerList.text += p.NickName;
             if (p.IsMasterClient) {
                 playerList.text += @" <sprite=""crowns"" index=7>";
             }
+            playerList.text += p.NickName;
             playerList.text += "\n";
         }
     }
@@ -79,6 +78,9 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
         countdownText.text = "Starting in : " + countdown.ToString();
     }
     
-
+    public void QuitRoom() {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("LobbyRoom");
+    }
 
 }
