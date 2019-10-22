@@ -77,7 +77,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     }
 
     private void Update() {
-        if (playerCount == PhotonNetwork.CurrentRoom.MaxPlayers && gameState == GameState.WAITING && PhotonNetwork.IsMasterClient) {
+        if (playerCount == PhotonNetwork.CurrentRoom.MaxPlayers && gameState == GameState.WAITING && PhotonNetwork.IsMasterClient && gameState != GameState.FINISHED) {
             SetGameState(GameState.STARTED);
         }
         if (playerCount == 1 && gameState == GameState.STARTED) {
@@ -91,7 +91,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
 
 
     public void SetEndGameText() {
-        TextEvent.instance.AddDeathMessage(PhotonNetwork.NickName + " Died");
+        TextEvent.instance.AddMessage(PhotonNetwork.NickName + " Died", TextEvent.Colors.RED);
         endGameText.text = "You Lose";
         endGamePanel.SetActive(true);
     }

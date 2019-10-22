@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     private Rigidbody m_Body;
     private Vector3 networkPosition;
     private Quaternion networkRotation;
+    private bool boost;
 
     void Start()
     {
@@ -79,6 +80,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
             m_Body.position = Vector3.MoveTowards(m_Body.position, networkPosition, Time.fixedDeltaTime);
             m_Body.rotation = Quaternion.RotateTowards(m_Body.rotation, networkRotation, Time.fixedDeltaTime * 100.0f);
         }
+
+        if(GameRoomController.instance.GetGameState() == GameRoomController.GameState.FINISHED) {
+            canControl = false;
+        }
     }
 
     void MovePlayer(float time) {
@@ -129,6 +134,32 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
                 transform.Rotate(new Vector3(0, 90, 0), Space.Self);
                 GetComponent<WallCreator>().SpawnWall(moveDirection);
             }
+
+            if (Input.GetKeyDown(KeyCode.B)) {
+                if (!boost) {
+                    boost = true;
+                    StartCoroutine("Boost");
+                }
+            }
         }
     }
+
+    IEnumerator Boost() {
+        TextEvent.instance.AddMessage(PhotonNetwork.NickName + " Boosted!", TextEvent.Colors.YELLOW);
+        photonView.RPC("BoostStartRPC", RpcTarget.All);
+        yield return new WaitForSeconds(1);
+        photonView.RPC("BoostStopRPC", RpcTarget.All);
+        yield return new WaitForSeconds(5);
+        boost = false;
+    }
+
+    [PunRPC]
+    void BoostStartRPC() {
+        speed += 12;
+    }
+    [PunRPC]
+    void BoostStopRPC() {
+        speed -= 12;
+    }
+
 }
