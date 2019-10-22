@@ -11,8 +11,9 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
 
     [SerializeField] private Transform[] playerSpawns;
     [SerializeField] private int playerCount;
-    [SerializeField] private GameObject endGamePanel;
+    [SerializeField] private GameObject endGamePanel, spectatePanel;
     [SerializeField] private TextMeshProUGUI endGameText;
+    [SerializeField] private GameObject mainCamera, spectateCamera;
 
     private Transform playerSpawn;
 
@@ -81,6 +82,10 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
             SetGameState(GameState.STARTED);
         }
         if (playerCount == 1 && gameState == GameState.STARTED) {
+            SetGameState(GameState.FINISHED);
+        }
+
+        if (gameState == GameState.FINISHED) {
             endGamePanel.SetActive(true);
         }
     }
@@ -99,5 +104,12 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     public void Disconnect() {
         PhotonNetwork.Disconnect();
         SceneManager.LoadScene("LobbyRoom");
+    }
+
+    public void Spectate() {
+        endGamePanel.SetActive(false);
+        spectatePanel.SetActive(true);
+        spectateCamera.SetActive(true);
+        mainCamera.SetActive(false);
     }
 }

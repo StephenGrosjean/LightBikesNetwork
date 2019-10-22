@@ -17,10 +17,29 @@ public class LobbyController : MonoBehaviourPunCallbacks {
     [SerializeField] private TMP_InputField nickName;
 
     bool isOnline;
+    private string playerName;
 
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
+        if (PlayerPrefs.HasKey("playerName")) {
+            playerName = PlayerPrefs.GetString("playerName");
+            nickName.text = playerName;
+        }
+        else{
+            playerName = "Player_" + Random.Range(0, 100).ToString();
+            nickName.text = playerName;
+            PlayerPrefs.SetString("playerName", playerName);
+        }
+
+        if (PlayerPrefs.HasKey("playerName")) {
+            if(PlayerPrefs.GetString("playerName") == "") {
+                playerName = "Player_" + Random.Range(0, 100).ToString();
+                nickName.text = playerName;
+                PlayerPrefs.SetString("playerName", playerName);
+            }
+        }
+        
     }
 
     public override void OnConnectedToMaster() {
@@ -58,6 +77,7 @@ public class LobbyController : MonoBehaviourPunCallbacks {
 
     public void SetNickName() {
         PhotonNetwork.NickName = nickName.text;
+        PlayerPrefs.SetString("playerName", nickName.text);
     }
 
     //MENU CHOICES

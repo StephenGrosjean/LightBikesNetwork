@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     IEnumerator Boost() {
         TextEvent.instance.AddMessage(PhotonNetwork.NickName + " Boosted!", TextEvent.Colors.YELLOW);
         photonView.RPC("BoostStartRPC", RpcTarget.All);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.5f);
         photonView.RPC("BoostStopRPC", RpcTarget.All);
         yield return new WaitForSeconds(5);
         boost = false;
