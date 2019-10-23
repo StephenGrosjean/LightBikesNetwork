@@ -14,27 +14,19 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private GameObject endGamePanel, spectatePanel;
     [SerializeField] private TextMeshProUGUI endGameText;
     [SerializeField] private GameObject mainCamera, spectateCamera;
+    [SerializeField] private GameObject endGameDummy;
 
     private Transform playerSpawn;
 
     private Player myPlayer;
 
+    public bool endGame;
+    private bool started;
+
     public static GameRoomController instance;
-
-    public enum GameState {
-        WAITING,
-        STARTED,
-        FINISHED
-    }
-
-    private GameState gameState;
 
     private void Awake() {
         instance = this;
-    }
-
-    public GameState GetGameState() {
-        return gameState;
     }
 
     public void RemovePlayer() {
@@ -54,24 +46,13 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         playerCount++;
     }
 
-    public void SetGameState(GameState state) {
-        if(PhotonNetwork.IsMasterClient)
-        photonView.RPC("SetGameStateRPC", RpcTarget.All, state);
-    }
-    [PunRPC]
-    void SetGameStateRPC(GameState state) {
-        gameState = state;
-        Debug.Log("NEW GAME STATE : " + gameState.ToString());
-    }
-
     private void Start() {
-        if (PhotonNetwork.IsMasterClient) {
-            SetGameState(GameState.WAITING);
-        }
+        Invoke("LateStart", 1);
+    }
 
+    private void LateStart() {
         myPlayer = PhotonNetwork.LocalPlayer;
-        Debug.Log(myPlayer.ActorNumber);
-        playerSpawn = playerSpawns[myPlayer.ActorNumber-1];
+        playerSpawn = playerSpawns[myPlayer.ActorNumber - 1];
 
         GameObject player = PhotonNetwork.Instantiate("PhotonPlayer", playerSpawn.position, playerSpawn.rotation);
 
@@ -79,19 +60,19 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     }
 
     private void Update() {
-        if (playerCount == PhotonNetwork.CurrentRoom.MaxPlayers && gameState == GameState.WAITING && PhotonNetwork.IsMasterClient && gameState != GameState.FINISHED) {
-            SetGameState(GameState.STARTED);
+        if (!started && playerCount == PhotonNetwork.CurrentRoom.MaxPlayers) {
+            StartGame();
         }
-        /*if (playerCount == 1 && gameState == GameState.STARTED) {
+        if (!endGame && playerCount == 1 && started) {
             endGamePanel.SetActive(true);
-            SetGameState(GameState.FINISHED);
-        }*/
+            endGameDummy.SetActive(true);
+            endGame = true;
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {
         RemovePlayer();
     }
-
 
     public void SetEndGameText() {
         TextEvent.instance.AddMessage(PhotonNetwork.NickName + " Died", TextEvent.Colors.RED);
@@ -110,4 +91,13 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         spectateCamera.SetActive(true);
         mainCamera.SetActive(false);
     }
+
+    void StartGame() {
+        started = true;
+    }
+
+    public GameObject GetDummy() {
+        return endGameDummy;
+    }
+
 }

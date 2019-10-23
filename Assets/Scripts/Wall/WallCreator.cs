@@ -7,6 +7,7 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
 
     [SerializeField] private List<Vector3> points = new List<Vector3>();
     [SerializeField] private GameObject currentWall;
+    [SerializeField] private Vector3 wallOffset;
     PhotonView view;
     private GameObject tempWall;
     private Vector3 movement;
@@ -78,13 +79,13 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
         object[] initData = new object[1];
         initData[0] = GetComponent<PlayerController>().GetPlayerID();
 
-        PhotonNetwork.Instantiate("WallCorner", transform.position, Quaternion.identity, 0, initData);
+        PhotonNetwork.Instantiate("WallCorner", transform.position+wallOffset, Quaternion.identity, 0, initData);
 
-        tempWall = PhotonNetwork.Instantiate("Wall", transform.position, Quaternion.identity, 0, initData);
+        tempWall = PhotonNetwork.Instantiate("Wall", transform.position + wallOffset, Quaternion.identity, 0, initData);
         tempWall.name = "TempWall";
 
         if (currentWall != null) {
-            currentWall.GetComponent<WallPositionCorrect>().SetWallPosition(points[points.Count - 1], points[points.Count - 2], direction);
+            currentWall.GetComponent<WallPositionCorrect>().SetWallPosition(points[points.Count - 1] + wallOffset, points[points.Count - 2] + wallOffset, direction);
         }
 
         view.RPC("AsignWall", RpcTarget.All);
@@ -92,8 +93,8 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
 
     void UpdateWall() {
         if (photonView.IsMine) {
-            float scale = (Vector3.Distance(points[points.Count - 1], transform.position));
-            Vector3 midPoint = middlePoint(points[points.Count - 1], transform.position);
+            float scale = (Vector3.Distance(points[points.Count - 1] + wallOffset, transform.position + wallOffset));
+            Vector3 midPoint = middlePoint(points[points.Count - 1] + wallOffset, transform.position + wallOffset);
 
             if (lastDirection == MoveDirection.Up || lastDirection == MoveDirection.Down) {
                 currentWall.transform.position = new Vector3(midPoint.x, midPoint.y, midPoint.z);

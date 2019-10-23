@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     [SerializeField] private Transform sectionSpawnPoint;
     [SerializeField] private float trailUpdateTime;
     [SerializeField] private TextMeshProUGUI playerName;
+    [SerializeField] private GameObject endGameDummy;
+
 
     [Header("Materials")]
     [SerializeField] private MeshRenderer bikeRenderer;
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     }
     public void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
+        endGameDummy = GameObject.Find("GameRoomController").GetComponent<GameRoomController>().GetDummy();
     }
 
     public void OnDisable() {
@@ -77,6 +80,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
 
     void FixedUpdate()
     {
+        if (endGameDummy != null) {
+            if (endGameDummy.activeSelf) {
+                canControl = false;
+            }
+        }
         if (canControl) {
             MovePlayer(Time.deltaTime);
         }
@@ -85,10 +93,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
             m_Body.position = Vector3.MoveTowards(m_Body.position, networkPosition, Time.fixedDeltaTime);
             m_Body.rotation = Quaternion.RotateTowards(m_Body.rotation, networkRotation, Time.fixedDeltaTime * 100.0f);
         }
-
-        if(GameRoomController.instance.GetGameState() == GameRoomController.GameState.FINISHED) {
+        /*if(GameRoomController.instance.GetGameState() == GameRoomController.GameState.FINISHED) {
             canControl = false;
-        }
+        }*/
     }
 
     void MovePlayer(float time) {
@@ -103,7 +110,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
 
     [PunRPC]
     public void SetPlayerColor() {
-        bikeRenderer.material.SetColor("_EmissionColor", GlobalPlayerColors.instance.GetPlayerColor(playerID));
+        bikeRenderer.material.color = GlobalPlayerColors.instance.GetPlayerColor(playerID);
     }
 
     void SetPlayerName() {

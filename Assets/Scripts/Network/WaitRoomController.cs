@@ -22,6 +22,11 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     private void Start() {
         roomName.text = "Room Name : " + PhotonNetwork.CurrentRoom.Name;
         UpdatePlayerList();
+        Invoke("LateStart", 0.5f);
+    }
+
+    void LateStart() {
+
     }
 
     private void Update() {
@@ -43,7 +48,6 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     public void ConnectToGame() {
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
-
         SceneManager.LoadScene(gameSceneName);
     }
 

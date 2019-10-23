@@ -70,5 +70,6 @@ MonoBehaviour:
   - BoostStartRPC
   - BoostStopRPC
   - AddMessageRPC
+  - StartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
