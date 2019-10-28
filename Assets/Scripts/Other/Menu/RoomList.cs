@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using TMPro;
-using UnityEngine.UI;
 
 public class RoomList : MonoBehaviourPunCallbacks
 {
@@ -14,34 +11,55 @@ public class RoomList : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject roomContainer;
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList) {
-        rooms = roomList;
-        UpdateRoomList();
-    }
 
-    void UpdateRoomList() {
-        foreach(GameObject r in roomsObjects) { 
-            Destroy(r);
-        }
-
-        roomsObjects.Clear();
-
-        foreach(RoomInfo r in rooms) {
-            GameObject room = Instantiate(roomPrefab);
-            room.transform.parent = roomContainer.transform;
-            room.name = r.Name;
-
-            string color = "";
-            if(r.PlayerCount == r.MaxPlayers) {
-                color = "<color=#ff1717>";
+        foreach(RoomInfo r in roomList) {
+            if (rooms.Contains(r)) {
+                if (r.IsOpen && r.MaxPlayers != 0 && r.PlayerCount != 0) {
+                    RemoveRoomInList(r);
+                    AddRoomInList(r);
+                }
+                else {
+                    RemoveRoomInList(r);
+                }
             }
             else {
-                color = "<color=#30ff44>";
-
+                AddRoomInList(r);
             }
-            room.GetComponent<RoomObject>().SetRoomName(r.Name);
-            room.GetComponent<RoomObject>().SetRoomCapacity(color + r.PlayerCount + "/" + r.MaxPlayers + "</color>");
-            room.GetComponent<RoomObject>().roomName = r.Name;
-            roomsObjects.Add(room);
+        }
+        UpdateRoomObjects();
+    }
+
+    void AddRoomInList(RoomInfo room) {
+            rooms.Add(room);
+    }
+
+    void RemoveRoomInList(RoomInfo room) {
+        rooms.Remove(room);
+    }
+
+    void UpdateRoomObjects() {
+        foreach(GameObject room in roomsObjects) {
+            Destroy(room);
+        }
+        foreach(RoomInfo r in rooms) {
+            if (r.IsOpen && r.IsVisible) {
+                GameObject room = Instantiate(roomPrefab);
+                room.transform.SetParent(roomContainer.transform, false);
+                room.name = r.Name;
+
+                string color = "";
+                if (r.PlayerCount == r.MaxPlayers) {
+                    color = "<color=#ff1717>";
+                }
+                else {
+                    color = "<color=#30ff44>";
+
+                }
+                room.GetComponent<RoomObject>().SetRoomNameText(r.Name);
+                room.GetComponent<RoomObject>().SetRoomCapacity(color + r.PlayerCount + "/" + r.MaxPlayers + "</color>");
+                room.GetComponent<RoomObject>().SetRoomName(r.Name);
+                roomsObjects.Add(room);
+            }
         }
     }
 

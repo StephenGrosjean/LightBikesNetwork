@@ -71,5 +71,10 @@ MonoBehaviour:
   - BoostStopRPC
   - AddMessageRPC
   - StartGame
+  - DisableModel
+  - AddBike
+  - AddBikeRPC
+  - AddBikeToStrings
+  - RemoveBikeToStrings
   DisableAutoOpenWizard: 1
   ShowSettings: 1

@@ -1,10 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class WallColor : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
+
+    private Renderer renderer;
+
+    private void Awake() {
+        renderer = GetComponent<Renderer>();
+    }
+
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
         object[] initData = info.photonView.InstantiationData;
         photonView.RPC("SetColor", RpcTarget.All, initData[0]);
@@ -12,6 +16,6 @@ public class WallColor : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 
     [PunRPC]
     void SetColor(int id) {
-        GetComponent<Renderer>().material.color = GlobalPlayerColors.instance.GetPlayerColor(id);
+        renderer.material.color = GlobalPlayerColors.instance.GetPlayerColor(id);
     }
 }

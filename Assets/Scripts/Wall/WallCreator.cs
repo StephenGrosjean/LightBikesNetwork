@@ -8,7 +8,7 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
     [SerializeField] private List<Vector3> points = new List<Vector3>();
     [SerializeField] private GameObject currentWall;
     [SerializeField] private Vector3 wallOffset;
-    PhotonView view;
+
     private GameObject tempWall;
     private Vector3 movement;
 
@@ -53,23 +53,9 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
         }
     }
 
-    void Start()
-    {
-        view = GetComponent<PhotonView>();
-    }
-
     void FixedUpdate() {
-        if (currentWall != null) {
-            if (!photonView.IsMine) {
-                /*currentWall.transform.position = Vector3.MoveTowards(currentWall.transform.position, networkPosition, Time.fixedDeltaTime);
-                currentWall.transform.rotation = Quaternion.RotateTowards(currentWall.transform.rotation, networkRotation, Time.fixedDeltaTime * 100.0f);
-                currentWall.transform.localScale = Vector3.MoveTowards(currentWall.transform.localScale, networkLocalScale, Time.fixedDeltaTime);*/
-
-            }
-            else {
-                //view.RPC("UpdateWall", RpcTarget.All);
-                UpdateWall();
-            }
+        if (currentWall != null && photonView.IsMine) {
+            UpdateWall();
         }
     }
 
@@ -88,7 +74,7 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
             currentWall.GetComponent<WallPositionCorrect>().SetWallPosition(points[points.Count - 1] + wallOffset, points[points.Count - 2] + wallOffset, direction);
         }
 
-        view.RPC("AsignWall", RpcTarget.All);
+        photonView.RPC("AsignWall", RpcTarget.All);
     }
 
     void UpdateWall() {
@@ -109,7 +95,7 @@ public class WallCreator : MonoBehaviourPun, IPunObservable {
 
     [PunRPC]
     void AsignWall() {
-        if (view.IsMine) {
+        if (photonView.IsMine) {
             currentWall = GameObject.Find("TempWall");
             currentWall.name = "Wall" + Time.time;
         }

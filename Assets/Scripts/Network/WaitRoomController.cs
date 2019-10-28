@@ -22,7 +22,6 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     private void Start() {
         roomName.text = "Room Name : " + PhotonNetwork.CurrentRoom.Name;
         UpdatePlayerList();
-        Invoke("LateStart", 0.5f);
     }
 
     void LateStart() {
@@ -42,6 +41,15 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
                 ConnectToGame();
             }
         }
+        else {
+            if (counting && PhotonNetwork.IsMasterClient) {
+                CancelInvoke("Count");
+                counting = false;
+                countdown = 5;
+            }
+        }
+
+        
 
     }
 
@@ -65,7 +73,7 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
         
         foreach(Player p in players) {
             if (p.IsMasterClient) {
-                playerList.text += @" <sprite=""crowns"" index=7>";
+                playerList.text += @" <sprite index=7>";
             }
             playerList.text += p.NickName;
             playerList.text += "\n";

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -8,13 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class GameRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private Material masterMaterial, clientMaterial;
-
     [SerializeField] private Transform[] playerSpawns;
     [SerializeField] private int playerCount;
     [SerializeField] private GameObject endGamePanel, spectatePanel;
     [SerializeField] private TextMeshProUGUI endGameText;
     [SerializeField] private GameObject mainCamera, spectateCamera;
     [SerializeField] private GameObject endGameDummy;
+    [SerializeField] private BikesSpriteColor bikeSpriteColorScript;
 
     private Transform playerSpawn;
 
@@ -23,20 +21,21 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     public bool endGame;
     private bool started;
 
+
     public static GameRoomController instance;
 
     private void Awake() {
         instance = this;
     }
 
-    public void RemovePlayer() {
+    public void RemovePlayer(int ID) {
         photonView.RPC("RemovePlayerRPC", RpcTarget.All);
+        photonView.RPC("RemoveBikeToStrings", RpcTarget.All, ID);
     }
     [PunRPC]
     void RemovePlayerRPC() {
         playerCount--;
     }
-
 
     public void AddPlayer() {
         photonView.RPC("AddPlayerRPC", RpcTarget.All);
@@ -57,6 +56,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         GameObject player = PhotonNetwork.Instantiate("PhotonPlayer", playerSpawn.position, playerSpawn.rotation);
 
         AddPlayer();
+        photonView.RPC("AddBikeToStrings", RpcTarget.All, myPlayer.ActorNumber);
     }
 
     private void Update() {
@@ -71,7 +71,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {
-        RemovePlayer();
+        RemovePlayer(otherPlayer.ActorNumber);
     }
 
     public void SetEndGameText() {
@@ -100,4 +100,15 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         return endGameDummy;
     }
 
+
+    [PunRPC]
+    void AddBikeToStrings(int ID) {
+        bikeSpriteColorScript.AddBike(ID);
+    }
+
+    [PunRPC]
+    void RemoveBikeToStrings(int ID) {
+        bikeSpriteColorScript.BikeDestroyed(ID);
+
+    }
 }

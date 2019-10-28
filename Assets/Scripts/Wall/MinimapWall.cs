@@ -6,12 +6,18 @@ using UnityEngine.UI;
 public class MinimapWall : MonoBehaviour
 {
     [SerializeField] private float scale;
+    private SpriteRenderer spriteRenderer;
+    private MeshRenderer meshRenderer;
 
-    // Start is called before the first frame update
+    private void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        meshRenderer = GetComponentInParent<MeshRenderer>();
+    }
+
     void Start()
     {
-        GetComponent<SpriteRenderer>().color = GetComponentInParent<MeshRenderer>().material.color;
-        GetComponent<SpriteRenderer>().color = new Color(GetComponent<SpriteRenderer>().color.r, GetComponent<SpriteRenderer>().color.g, GetComponent<SpriteRenderer>().color.b, 255);
+        spriteRenderer.color = meshRenderer.material.color;
+        spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 255);
     }
 
     // Update is called once per frame

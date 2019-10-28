@@ -447,10 +447,10 @@ MonoBehaviour:
   m_PositionModel:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 3
-    InterpolateOption: 2
-    InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 1
+    TeleportIfDistanceGreaterThan: 2
+    InterpolateOption: 1
+    InterpolateMoveTowardsSpeed: 15
+    InterpolateLerpSpeed: 150
     ExtrapolateOption: 0
     ExtrapolateSpeed: 1
     ExtrapolateIncludingRoundTripTime: 1
@@ -476,8 +476,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.44746882, y: 0.79174423, z: 0.5950661}
-  m_Center: {x: -3.188205e-15, y: -0.10613561, z: 2.0560875}
+  m_Size: {x: 0.44746882, y: 0.79174423, z: 1.5275885}
+  m_Center: {x: -1.9316891e-14, y: -0.10613561, z: 1.5898263}
 --- !u!114 &5353702913291974549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,6 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff8f23285432184f95b9752c35b5316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  model: {fileID: 5547315886567878008}
 --- !u!114 &592122266959742365
 MonoBehaviour:
   m_ObjectHideFlags: 0

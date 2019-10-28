@@ -5,18 +5,25 @@ using Photon.Pun;
 
 public class PlayerDeath : MonoBehaviourPunCallbacks
 {
-    private PhotonView view;
+    [SerializeField] private GameObject model;
     private WallCreator wallCreator;
     private bool dead = false;
 
     private void Awake() {
-        view = GetComponent<PhotonView>();
         wallCreator = GetComponent<WallCreator>();
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (view.IsMine) {
+        if (photonView.IsMine) {
             if (collision.collider.tag == "Wall" && collision.gameObject != wallCreator.GetCurrentWall()) {
+                Death();
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (photonView.IsMine) {
+            if (other.tag == "Wall" && other.gameObject != wallCreator.GetCurrentWall()) {
                 Death();
             }
         }
@@ -27,10 +34,18 @@ public class PlayerDeath : MonoBehaviourPunCallbacks
             if (photonView.IsMine) {
                 dead = true;
                 GetComponent<PlayerController>().canControl = false;
-                PhotonNetwork.Instantiate("DeathObj", transform.position, transform.rotation);
-                GameRoomController.instance.RemovePlayer();
+                object[] initData = new object[1];
+                initData[0] = GetComponent<PlayerController>().GetPlayerID();
+                PhotonNetwork.Instantiate("DeathObj", transform.position, transform.rotation, 0, initData);
+                GameRoomController.instance.RemovePlayer(photonView.OwnerActorNr);
                 GameRoomController.instance.SetEndGameText();
+                photonView.RPC("DisableModel", RpcTarget.All);
             }
         }
+    }
+
+    [PunRPC]
+    private void DisableModel() {
+        model.SetActive(false);
     }
 }

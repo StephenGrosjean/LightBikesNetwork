@@ -39,7 +39,6 @@ public class LobbyController : MonoBehaviourPunCallbacks {
                 PlayerPrefs.SetString("playerName", playerName);
             }
         }
-        
     }
 
     public override void OnConnectedToMaster() {
@@ -70,9 +69,10 @@ public class LobbyController : MonoBehaviourPunCallbacks {
         roomOptions.MaxPlayers = (byte)(playerNumber.value+2);
         roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
-
+        roomOptions.EmptyRoomTtl = 0;
+ 
         string roomOptionName = roomName.text;
-        PhotonNetwork.JoinOrCreateRoom(roomOptionName, roomOptions, TypedLobby.Default);
+        PhotonNetwork.CreateRoom(roomOptionName, roomOptions, TypedLobby.Default);
     }
 
     public void SetNickName() {
@@ -109,5 +109,4 @@ public class LobbyController : MonoBehaviourPunCallbacks {
         createRoomPanel.SetActive(false);
         mainPanel.SetActive(true);
     }
-
 }
