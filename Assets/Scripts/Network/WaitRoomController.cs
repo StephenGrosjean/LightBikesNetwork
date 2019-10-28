@@ -45,7 +45,7 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
             if (counting && PhotonNetwork.IsMasterClient) {
                 CancelInvoke("Count");
                 counting = false;
-                countdown = 5;
+                photonView.RPC("ResetCountdown", RpcTarget.All);
             }
         }
 
@@ -93,6 +93,12 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     public void QuitRoom() {
         PhotonNetwork.Disconnect();
         SceneManager.LoadScene("LobbyRoom");
+    }
+
+    [PunRPC]
+    void ResetCountdown() {
+        countdown = 5;
+        countdownText.text = "";
     }
 
 }

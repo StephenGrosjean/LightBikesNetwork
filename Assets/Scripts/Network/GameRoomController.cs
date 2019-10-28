@@ -13,6 +13,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private GameObject mainCamera, spectateCamera;
     [SerializeField] private GameObject endGameDummy;
     [SerializeField] private BikesSpriteColor bikeSpriteColorScript;
+    [SerializeField] private GameObject menuPanel;
 
     private Transform playerSpawn;
 
@@ -68,10 +69,17 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
             endGameDummy.SetActive(true);
             endGame = true;
         }
+        if (started) {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                ToggleMenuPanel();
+            }
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {
-        RemovePlayer(otherPlayer.ActorNumber);
+        if (PhotonNetwork.IsMasterClient) {
+            RemovePlayer(otherPlayer.ActorNumber);
+        }
     }
 
     public void SetEndGameText() {
@@ -110,5 +118,9 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     void RemoveBikeToStrings(int ID) {
         bikeSpriteColorScript.BikeDestroyed(ID);
 
+    }
+
+    public void ToggleMenuPanel() {
+        menuPanel.SetActive(!menuPanel.activeInHierarchy);
     }
 }
