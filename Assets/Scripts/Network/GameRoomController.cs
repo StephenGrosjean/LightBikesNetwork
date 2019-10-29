@@ -7,23 +7,21 @@ using UnityEngine.SceneManagement;
 public class GameRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private Material masterMaterial, clientMaterial;
     [SerializeField] private Transform[] playerSpawns;
-    [SerializeField] private int playerCount;
     [SerializeField] private GameObject endGamePanel, spectatePanel;
     [SerializeField] private TextMeshProUGUI endGameText;
     [SerializeField] private GameObject mainCamera, spectateCamera;
     [SerializeField] private GameObject endGameDummy;
     [SerializeField] private BikesSpriteColor bikeSpriteColorScript;
     [SerializeField] private GameObject menuPanel;
+    [SerializeField] private int playerCount;
 
     private Transform playerSpawn;
-
     private Player myPlayer;
-
     public bool endGame;
     private bool started;
 
 
-    public static GameRoomController instance;
+    public static GameRoomController instance; //Singleton
 
     private void Awake() {
         instance = this;
@@ -33,17 +31,9 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         photonView.RPC("RemovePlayerRPC", RpcTarget.All);
         photonView.RPC("RemoveBikeToStrings", RpcTarget.All, ID);
     }
-    [PunRPC]
-    void RemovePlayerRPC() {
-        playerCount--;
-    }
 
     public void AddPlayer() {
         photonView.RPC("AddPlayerRPC", RpcTarget.All);
-    }
-    [PunRPC]
-    void AddPlayerRPC() {
-        playerCount++;
     }
 
     private void Start() {
@@ -108,6 +98,9 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
         return endGameDummy;
     }
 
+    public void ToggleMenuPanel() {
+        menuPanel.SetActive(!menuPanel.activeInHierarchy);
+    }
 
     [PunRPC]
     void AddBikeToStrings(int ID) {
@@ -117,10 +110,15 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     [PunRPC]
     void RemoveBikeToStrings(int ID) {
         bikeSpriteColorScript.BikeDestroyed(ID);
-
     }
 
-    public void ToggleMenuPanel() {
-        menuPanel.SetActive(!menuPanel.activeInHierarchy);
+    [PunRPC]
+    void RemovePlayerRPC() {
+        playerCount--;
+    }
+
+    [PunRPC]
+    void AddPlayerRPC() {
+        playerCount++;
     }
 }

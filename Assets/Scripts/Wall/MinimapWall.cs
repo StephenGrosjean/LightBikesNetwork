@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class MinimapWall : MonoBehaviour
 {
@@ -20,7 +17,6 @@ public class MinimapWall : MonoBehaviour
         spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 255);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(transform.parent.localScale.x > transform.parent.localScale.y) {

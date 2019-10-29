@@ -1,23 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MinimapCamera : MonoBehaviour
 {
+    [SerializeField] private float smoothTime = 0.3f;
+    [SerializeField] private float xOffset, yOffset, zOffset;
+
     private Transform target;
     private Vector3 velocity = Vector3.zero;
-    public float smoothTime = 0.3f;
-    public float xOffset, yOffset, zOffset;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+    void Update(){
         if(target == null) {
             target = Camera.main.GetComponent<NetworkCamera>().GetTarget();
         }

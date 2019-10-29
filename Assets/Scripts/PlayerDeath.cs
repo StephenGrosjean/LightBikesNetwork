@@ -1,18 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
 
 public class PlayerDeath : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject model;
+
     private WallCreator wallCreator;
+    private PlayerController playerController;
     private bool dead = false;
 
     private void Awake() {
         wallCreator = GetComponent<WallCreator>();
+        playerController = GetComponent<PlayerController>();
     }
 
+    //Detect collisions 
     private void OnCollisionEnter(Collision collision) {
         if (photonView.IsMine) {
             if (collision.collider.tag == "Wall" && collision.gameObject != wallCreator.GetCurrentWall()) {
@@ -30,20 +32,26 @@ public class PlayerDeath : MonoBehaviourPunCallbacks
     }
 
     public void Death() {
-        if (!dead) {
-            if (photonView.IsMine) {
-                dead = true;
-                GetComponent<PlayerController>().canControl = false;
-                object[] initData = new object[1];
-                initData[0] = GetComponent<PlayerController>().GetPlayerID();
-                PhotonNetwork.Instantiate("DeathObj", transform.position, transform.rotation, 0, initData);
-                GameRoomController.instance.RemovePlayer(photonView.OwnerActorNr);
-                GameRoomController.instance.SetEndGameText();
-                photonView.RPC("DisableModel", RpcTarget.All);
-            }
+        if (!dead && photonView.IsMine) {
+            dead = true;
+            playerController.canControl = false;
+
+            //Create initData for the instantiated object
+            object[] initData = new object[1];
+            initData[0] = playerController.GetPlayerID();
+
+            //Instantiate the deathObject with the init data
+            PhotonNetwork.Instantiate("DeathObj", transform.position, transform.rotation, 0, initData);
+
+
+            GameRoomController.instance.RemovePlayer(photonView.OwnerActorNr); // Remove the player from the GameRoomController
+            GameRoomController.instance.SetEndGameText(); //Set the EndGameText
+            photonView.RPC("DisableModel", RpcTarget.All); //Disable the 3d model
+            
         }
     }
 
+    //RPC to disable 3D Model on all clients
     [PunRPC]
     private void DisableModel() {
         model.SetActive(false);

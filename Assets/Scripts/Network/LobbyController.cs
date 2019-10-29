@@ -16,7 +16,7 @@ public class LobbyController : MonoBehaviourPunCallbacks {
     [SerializeField] private GameObject createRoomPanel;
     [SerializeField] private TMP_InputField nickName;
 
-    bool isOnline;
+    private bool isOnline;
     private string playerName;
 
     void Start()

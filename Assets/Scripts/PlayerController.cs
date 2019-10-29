@@ -6,35 +6,36 @@ using TMPro;
 
 
 public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiateMagicCallback {
+    [SerializeField] private float trailUpdateTime;
     [SerializeField] private int playerID;
     [SerializeField] private float speed = 1;
-    private PhotonView view;
-    public bool canControl = true;
     [SerializeField] private float timing;
+    
     [SerializeField] private Transform sectionSpawnPoint;
-    [SerializeField] private float trailUpdateTime;
     [SerializeField] private TextMeshProUGUI playerName;
     [SerializeField] private GameObject endGameDummy;
-
-
-    [Header("Materials")]
     [SerializeField] private MeshRenderer bikeRenderer;
 
 
-    public float lag;
-    public MeshCreator lightTrail;
+    private PhotonView view;
+    public bool canControl = true;
 
+    private float lag;
     private Rigidbody m_Body;
     private Vector3 networkPosition;
     private Quaternion networkRotation;
     private bool boost;
 
+    public int GetPlayerID() {
+        return playerID;
+    }
+
     void Start()
     {
         canControl = view.IsMine;
         view.RPC("SetRigidbody", RpcTarget.All);
-
     }
+
     public void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
         endGameDummy = GameObject.Find("GameRoomController").GetComponent<GameRoomController>().GetDummy();
@@ -42,11 +43,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
 
     public void OnDisable() {
         PhotonNetwork.RemoveCallbackTarget(this);
-    }
-
-    [PunRPC]
-    void SetRigidbody() {
-        m_Body = GetComponent<Rigidbody>();
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
@@ -58,12 +54,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
         }
     }
 
-    public int GetPlayerID() {
-        return playerID;
-    }
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        if (stream.IsWriting) {
+        if (stream.IsWriting && m_Body != null) {
             stream.SendNext(this.m_Body.position);
             stream.SendNext(this.m_Body.rotation);
             stream.SendNext(this.m_Body.velocity);
@@ -89,13 +81,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
             MovePlayer(Time.deltaTime);
         }
 
+        //Movement
         if (!view.IsMine) {
             m_Body.position = Vector3.MoveTowards(m_Body.position, networkPosition, Time.fixedDeltaTime);
             m_Body.rotation = Quaternion.RotateTowards(m_Body.rotation, networkRotation, Time.fixedDeltaTime * 100.0f);
         }
-        /*if(GameRoomController.instance.GetGameState() == GameRoomController.GameState.FINISHED) {
-            canControl = false;
-        }*/
     }
 
     void MovePlayer(float time) {
@@ -103,18 +93,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
         transform.position = transform.position;
     }
 
-    [PunRPC]
-    public void SetPlayerID(int id) {
-        playerID = id;
-    }
-
-    [PunRPC]
-    public void SetPlayerColor() {
-        bikeRenderer.material.color = GlobalPlayerColors.instance.GetPlayerColor(playerID);
-    }
-
     void SetPlayerName() {
-        gameObject.name = "myPlayer";
+        gameObject.name = "myPlayer"; //set local gameobject name for the camera
         Camera.main.GetComponent<NetworkCamera>().AssignPlayer(this.gameObject.transform);
         playerName.text = PhotonNetwork.NickName;
     }
@@ -125,6 +105,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
             rotationParam = Mathf.RoundToInt(rotationParam);
             WallCreator.MoveDirection moveDirection = WallCreator.MoveDirection.Up;
 
+            //Rotation table for the wall orientation
             if (rotationParam == 0 || rotationParam == 360 || rotationParam == -360) {
                 moveDirection = WallCreator.MoveDirection.Up;
             }else if(rotationParam == 90 || rotationParam == -270) {
@@ -147,6 +128,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
                 GetComponent<WallCreator>().SpawnWall(moveDirection);
             }
 
+
+            //Boost
             if (Input.GetKeyDown(KeyCode.B)) {
                 if (!boost) {
                     boost = true;
@@ -165,6 +148,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
         boost = false;
     }
 
+
+    //RPCs
+    
     [PunRPC]
     void BoostStartRPC() {
         speed += 12;
@@ -172,6 +158,21 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     [PunRPC]
     void BoostStopRPC() {
         speed -= 12;
+    }
+
+    [PunRPC]
+    void SetRigidbody() {
+        m_Body = GetComponent<Rigidbody>();
+    }
+
+    [PunRPC]
+    public void SetPlayerID(int id) {
+        playerID = id;
+    }
+
+    [PunRPC]
+    public void SetPlayerColor() {
+        bikeRenderer.material.color = GlobalPlayerColors.instance.GetPlayerColor(playerID);
     }
 
 }

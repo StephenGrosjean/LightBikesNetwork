@@ -3,14 +3,14 @@ using System.Collections;
 
 public class NetworkCamera : MonoBehaviour {
 
-    public Transform target;
-    public Transform center;
-    public float smoothTime = 0.3f;
-    public float xOffset, yOffset, zOffset;
-    public float xOffsetRot, yOffsetRot, zOffsetRot;
+    [SerializeField] private Transform target;
+    [SerializeField] private Transform center;
+    [SerializeField] private float smoothTime = 0.3f;
+    [SerializeField] private float xOffset, yOffset, zOffset;
+    [SerializeField] private float xOffsetRot, yOffsetRot, zOffsetRot;
 
     private Vector3 velocity = Vector3.zero;
-    float timeCount;
+    private float timeCount;
 
     public void AssignPlayer(Transform player) {
         target = player;

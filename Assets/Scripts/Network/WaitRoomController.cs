@@ -14,7 +14,6 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     [SerializeField] private TextMeshProUGUI playerList;
     [SerializeField] private TextMeshProUGUI roomName;
     [SerializeField] private TextMeshProUGUI countdownText;
-    public List<string> names = new List<string>();
 
     private int countdown = 5;
     private bool counting;
@@ -22,10 +21,6 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     private void Start() {
         roomName.text = "Room Name : " + PhotonNetwork.CurrentRoom.Name;
         UpdatePlayerList();
-    }
-
-    void LateStart() {
-
     }
 
     private void Update() {
@@ -48,9 +43,6 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
                 photonView.RPC("ResetCountdown", RpcTarget.All);
             }
         }
-
-        
-
     }
 
     public void ConnectToGame() {
@@ -84,11 +76,6 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     void Count() {
         photonView.RPC("CountRPC", RpcTarget.All);
     }
-    [PunRPC]
-    void CountRPC() {
-        countdown--;
-        countdownText.text = "Starting in : " + countdown.ToString();
-    }
     
     public void QuitRoom() {
         PhotonNetwork.Disconnect();
@@ -99,6 +86,12 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     void ResetCountdown() {
         countdown = 5;
         countdownText.text = "";
+    }
+
+    [PunRPC]
+    void CountRPC() {
+        countdown--;
+        countdownText.text = "Starting in : " + countdown.ToString();
     }
 
 }
