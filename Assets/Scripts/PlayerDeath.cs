@@ -33,6 +33,7 @@ public class PlayerDeath : MonoBehaviourPunCallbacks
 
     public void Death() {
         if (!dead && photonView.IsMine) {
+            SoundManager.instance.PlayEffect(SoundManager.Effect.DESTROY);
             dead = true;
             playerController.canControl = false;
 

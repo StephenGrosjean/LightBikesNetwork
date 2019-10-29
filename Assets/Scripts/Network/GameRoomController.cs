@@ -37,6 +37,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
     }
 
     private void Start() {
+        SoundManager.instance.PlayMusic(SoundManager.Music.GAME);
         Invoke("LateStart", 1);
     }
 
@@ -92,6 +93,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
 
     void StartGame() {
         started = true;
+        SoundManager.instance.PlayEffect(SoundManager.Effect.GAME_START);
     }
 
     public GameObject GetDummy() {
@@ -100,6 +102,7 @@ public class GameRoomController : MonoBehaviourPunCallbacks {
 
     public void ToggleMenuPanel() {
         menuPanel.SetActive(!menuPanel.activeInHierarchy);
+        SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
     }
 
     [PunRPC]

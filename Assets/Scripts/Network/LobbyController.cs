@@ -21,6 +21,7 @@ public class LobbyController : MonoBehaviourPunCallbacks {
 
     void Start()
     {
+        SoundManager.instance.PlayMusic(SoundManager.Music.MENU);
         PhotonNetwork.ConnectUsingSettings();
         if (PlayerPrefs.HasKey("playerName")) {
             playerName = PlayerPrefs.GetString("playerName");
@@ -54,12 +55,14 @@ public class LobbyController : MonoBehaviourPunCallbacks {
 
     public override void OnJoinedRoom() {
         Debug.Log("Joined Room");
-
+        SoundManager.instance.PlayEffect(SoundManager.Effect.VALIDATION);
         SceneManager.LoadScene(waitRoomName);
+
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) {
         Debug.Log("No room");
+        SoundManager.instance.PlayEffect(SoundManager.Effect.ERROR);
     }
 
 
@@ -85,28 +88,33 @@ public class LobbyController : MonoBehaviourPunCallbacks {
     public void Menu_RandomJoin() {
         if (isOnline) {
             PhotonNetwork.JoinRandomRoom();
+            SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
         }
     }
 
     public void Menu_JoinRoom(string name) {
         if (isOnline) {
             PhotonNetwork.JoinRoom(name);
+            SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
         }
     }
 
     public void Menu_JoinRoomPanel() {
         joinRoomPanel.SetActive(true);
         mainPanel.SetActive(false);
+        SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
     }
 
     public void Menu_CreateRoomPanel() {
         createRoomPanel.SetActive(true);
         mainPanel.SetActive(false);
+        SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
     }
 
     public void Menu_ReturnMenuPanel() {
         joinRoomPanel.SetActive(false);
         createRoomPanel.SetActive(false);
         mainPanel.SetActive(true);
+        SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
     }
 }

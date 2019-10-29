@@ -55,18 +55,20 @@ public class PlayerController : MonoBehaviourPun, IPunObservable, IPunInstantiat
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        if (stream.IsWriting && m_Body != null) {
-            stream.SendNext(this.m_Body.position);
-            stream.SendNext(this.m_Body.rotation);
-            stream.SendNext(this.m_Body.velocity);
-        }
-        else {
-            networkPosition = (Vector3)stream.ReceiveNext();
-            networkRotation = (Quaternion)stream.ReceiveNext();
-            m_Body.velocity = (Vector3)stream.ReceiveNext();
+        if (m_Body != null) {
+            if (stream.IsWriting) {
+                stream.SendNext(this.m_Body.position);
+                stream.SendNext(this.m_Body.rotation);
+                stream.SendNext(this.m_Body.velocity);
+            }
+            else {
+                networkPosition = (Vector3)stream.ReceiveNext();
+                networkRotation = (Quaternion)stream.ReceiveNext();
+                m_Body.velocity = (Vector3)stream.ReceiveNext();
 
-            lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-            networkPosition += (this.m_Body.velocity * lag);
+                lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+                networkPosition += (this.m_Body.velocity * lag);
+            }
         }
     }
 

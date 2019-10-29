@@ -78,6 +78,7 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     }
     
     public void QuitRoom() {
+        SoundManager.instance.PlayEffect(SoundManager.Effect.BUTTON_CLICK);
         PhotonNetwork.Disconnect();
         SceneManager.LoadScene("LobbyRoom");
     }
@@ -92,6 +93,7 @@ public class WaitRoomController : MonoBehaviourPunCallbacks {
     void CountRPC() {
         countdown--;
         countdownText.text = "Starting in : " + countdown.ToString();
+        SoundManager.instance.PlayEffect(SoundManager.Effect.VALIDATION);
     }
 
 }

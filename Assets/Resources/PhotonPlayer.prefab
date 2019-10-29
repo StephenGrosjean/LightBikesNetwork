@@ -490,17 +490,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00046a34de43ff4796c279c5465c4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trailUpdateTime: 0.2
   playerID: 0
   speed: 15
-  canControl: 1
   timing: 0.1
   sectionSpawnPoint: {fileID: 1471030579592218169}
-  trailUpdateTime: 0.2
   playerName: {fileID: 204383126692469088}
   endGameDummy: {fileID: 0}
   bikeRenderer: {fileID: 1431624207556341422}
-  lag: 0
-  lightTrail: {fileID: 0}
+  canControl: 1
 --- !u!114 &7819528798062322757
 MonoBehaviour:
   m_ObjectHideFlags: 0
