@@ -25,8 +25,13 @@ public class SoundManager : MonoBehaviour
 
 
     private void Awake() {
-        DontDestroyOnLoad(gameObject);
-        instance = this;
+        if (SoundManager.instance == null) {
+            DontDestroyOnLoad(this);
+            instance = this;
+        }
+        else {
+            Destroy(this);
+        }
     }
     
     public void PlayEffect(Effect effect) {
